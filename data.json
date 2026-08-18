@@ -1,0 +1,22 @@
+{
+  "range": { "start": "2026-08-03", "end": "2026-09-03" },
+  "rows": [
+    {
+      "partName": "2-10164-R01 – Main Hull Assembly",
+      "section": "1. Doc Release Queue",
+      "segments": [
+        { "label": "Main Hull Enclosure Assembly", "start": "2026-08-05", "end": "2026-08-12" },
+        { "label": "Wire and Harness Assembly 1", "start": "2026-08-12", "end": "2026-08-22" },
+        { "label": "PCB Assembly + Test", "start": "2026-08-22", "end": "2026-08-28" }
+      ]
+    },
+    {
+      "partName": "2-10168-R01 – Antenna Hull",
+      "section": "1. Doc Release Queue",
+      "segments": [
+        { "label": "1st Build – Main Hull System Test", "start": "2026-08-13", "end": "2026-08-19" },
+        { "label": "1st Build – Config + System Test", "start": "2026-08-24", "end": "2026-08-28" }
+      ]
+    }
+  ]
+}
