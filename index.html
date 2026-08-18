@@ -5,14 +5,20 @@
 <title>Parts Timeline</title>
 <style>
   body { font-family: -apple-system, sans-serif; margin: 24px; color: #1a1a1a; }
+  .legend { display: flex; gap: 16px; margin-bottom: 16px; font-size: 12px; color: #555; }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
   .ruler { display: flex; margin-bottom: 6px; padding-left: 220px; font-size: 12px; color: #888; }
   .ruler div { flex: 1; border-left: 1px solid #ddd; padding-left: 6px; }
   .row { display: flex; align-items: center; min-height: 52px; border-top: 1px solid #eee; }
   .label { width: 220px; flex-shrink: 0; font-size: 13px; font-weight: 500; padding-right: 12px; }
   .track { position: relative; flex: 1; height: 36px; }
-  .seg { position: absolute; top: 4px; height: 28px; background: #f2f2f2; border: 1px solid #ccc;
-         border-radius: 6px; display: flex; align-items: center; padding: 0 8px; overflow: hidden;
-         white-space: nowrap; font-size: 12px; color: #444; }
+  .seg { position: absolute; top: 4px; height: 28px; border-radius: 6px; display: flex; align-items: center;
+         padding: 0 8px; overflow: hidden; white-space: nowrap; font-size: 12px; border: 1px solid; }
+  .seg.done { background: #e6f4ea; border-color: #a8d5b5; color: #1e6b3c; }
+  .seg.in_progress { background: #fff4e0; border-color: #f0c986; color: #8a5a00; }
+  .seg.open { background: #f2f2f2; border-color: #ccc; color: #555; }
+  .seg.scheduled { background: #e8f0fe; border-color: #a9c6f5; color: #1a4d99; }
 </style>
 </head>
 <body>
@@ -29,6 +35,16 @@ function render(data) {
   const rangeStart = new Date(data.range.start).getTime();
   const rangeEnd = new Date(data.range.end).getTime();
   const totalMs = rangeEnd - rangeStart;
+
+  const legend = document.createElement('div');
+  legend.className = 'legend';
+  legend.innerHTML = `
+    <span><i style="background:#e6f4ea;border:1px solid #a8d5b5"></i> Done</span>
+    <span><i style="background:#fff4e0;border:1px solid #f0c986"></i> In progress</span>
+    <span><i style="background:#e8f0fe;border:1px solid #a9c6f5"></i> Scheduled</span>
+    <span><i style="background:#f2f2f2;border:1px solid #ccc"></i> Open</span>
+  `;
+  document.body.insertBefore(legend, document.getElementById('ruler'));
 
   const ruler = document.getElementById('ruler');
   const weeks = 5;
@@ -59,7 +75,7 @@ function render(data) {
       const width = ((end - start) / totalMs) * 100;
 
       const seg = document.createElement('div');
-      seg.className = 'seg';
+      seg.className = 'seg ' + (s.status || 'open');
       seg.style.left = left + '%';
       seg.style.width = width + '%';
       seg.textContent = s.label;
