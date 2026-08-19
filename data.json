@@ -16,29 +16,6 @@
       ]
     },
     {
-      "partName": "1-23456-R99 Part/Assembly Name",
-      "segments": [
-        {
-          "label": "BOM",
-          "start": "2026-07-17",
-          "end": "2026-07-17",
-          "status": "scheduled"
-        },
-        {
-          "label": "Elec DWG",
-          "start": "2026-07-17",
-          "end": "2026-07-17",
-          "status": "scheduled"
-        },
-        {
-          "label": "Mech DWG",
-          "start": "2026-07-17",
-          "end": "2026-07-17",
-          "status": "scheduled"
-        }
-      ]
-    },
-    {
       "partName": "2-10043-R10_Battery Pod Assembly",
       "segments": [
         {
@@ -124,10 +101,6 @@
           "status": "open"
         }
       ]
-    },
-    {
-      "partName": "Template",
-      "segments": []
     },
     {
       "partName": "8-10153-R03 Tether Storage Case",
