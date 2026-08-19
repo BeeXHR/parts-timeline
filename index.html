@@ -23,13 +23,14 @@
   .label .name { font-size: 13px; font-weight: 500; }
   .label .dates { font-size: 11px; color: #999; margin-top: 2px; }
   .track { position: relative; }
-  .seg-wrap { position: absolute; display: flex; align-items: center; height: 26px; cursor: default; }
-  .seg-bar { width: 20px; height: 20px; border-radius: 5px; border: 1px solid; flex-shrink: 0; }
-  .seg-bar.done { background: #e6f4ea; border-color: #a8d5b5; }
-  .seg-bar.in_progress { background: #fff4e0; border-color: #f0c986; }
-  .seg-bar.open { background: #f2f2f2; border-color: #ccc; }
-  .seg-bar.scheduled { background: #e8f0fe; border-color: #a9c6f5; }
-  .seg-label { margin-left: 6px; font-size: 12px; color: #333; white-space: nowrap; }
+  .seg-bar { position: absolute; height: 20px; border-radius: 5px; border: 1px solid; box-sizing: border-box;
+             display: flex; align-items: center; padding: 0 6px; overflow: hidden; white-space: nowrap;
+             font-size: 12px; cursor: default; }
+  .seg-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .seg-bar.done { background: #e6f4ea; border-color: #a8d5b5; color: #1e6b3c; }
+  .seg-bar.in_progress { background: #fff4e0; border-color: #f0c986; color: #8a5a00; }
+  .seg-bar.open { background: #f2f2f2; border-color: #ccc; color: #555; }
+  .seg-bar.scheduled { background: #e8f0fe; border-color: #a9c6f5; color: #1a4d99; }
   .empty-note { font-size: 12px; color: #aaa; padding: 10px 0; }
   .today-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #e0392b; z-index: 1; }
   .today-dot { position: absolute; top: -8px; width: 14px; height: 14px; background: #e0392b; border-radius: 50%;
@@ -56,11 +57,11 @@
 
 <script>
 const PX_PER_DAY = 22;
-const LANE_HEIGHT = 28;
+const LANE_HEIGHT = 26;
+const MIN_BAR_PX = 20;
 const PAD_WEEKS = 26;
 
 loadAndRender();
-
 document.getElementById('btnRefresh').onclick = loadAndRender;
 
 function loadAndRender() {
@@ -74,13 +75,6 @@ function loadAndRender() {
 
 function formatDateShort(dstr) {
   return new Date(dstr + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
-
-function measureTextWidth(text, font) {
-  const canvas = measureTextWidth._canvas || (measureTextWidth._canvas = document.createElement('canvas'));
-  const ctx = canvas.getContext('2d');
-  ctx.font = font;
-  return ctx.measureText(text).width;
 }
 
 function render(data) {
@@ -145,25 +139,26 @@ function render(data) {
       return;
     }
 
-    const font = '12px -apple-system, sans-serif';
+    // Compute REAL date-based left/width in px — no label text involved here at all.
     const items = r.segments.map(s => {
       const start = new Date(s.start + 'T00:00:00').getTime();
       const end = new Date(s.end + 'T00:00:00').getTime();
       const leftPx = ((start - rangeStart) / msPerDay) * PX_PER_DAY;
+      const widthPx = Math.max(((end - start) / msPerDay) * PX_PER_DAY, MIN_BAR_PX);
       const dateStr = `${formatDateShort(s.start)} – ${formatDateShort(s.end)}`;
-      const textWidth = measureTextWidth(s.label, font);
-      const renderedWidth = 20 + 6 + textWidth + 10;
-      return { ...s, leftPx, renderedWidth, dateStr };
+      return { ...s, leftPx, widthPx, dateStr };
     }).sort((a, b) => a.leftPx - b.leftPx);
 
+    // Lane assignment based ONLY on real date overlap, not label width.
+    // A tiny 2px buffer just avoids two bars sharing a pixel edge, not a visual/label gap.
     const laneEnds = [];
     items.forEach(seg => {
-      let laneIdx = laneEnds.findIndex(end => seg.leftPx >= end + 8);
+      let laneIdx = laneEnds.findIndex(end => seg.leftPx >= end);
       if (laneIdx === -1) {
         laneIdx = laneEnds.length;
-        laneEnds.push(seg.leftPx + seg.renderedWidth);
+        laneEnds.push(seg.leftPx + seg.widthPx + 2);
       } else {
-        laneEnds[laneIdx] = seg.leftPx + seg.renderedWidth;
+        laneEnds[laneIdx] = seg.leftPx + seg.widthPx + 2;
       }
       seg.lane = laneIdx;
     });
@@ -172,22 +167,18 @@ function render(data) {
     row.style.minHeight = (maxLanes * LANE_HEIGHT + 20) + 'px';
 
     items.forEach(seg => {
-      const wrap = document.createElement('div');
-      wrap.className = 'seg-wrap';
-      wrap.style.left = seg.leftPx + 'px';
-      wrap.style.top = (6 + seg.lane * LANE_HEIGHT) + 'px';
-      wrap.title = `${seg.label} • ${seg.dateStr}`;
-
       const bar = document.createElement('div');
       bar.className = 'seg-bar ' + (seg.status || 'open');
+      bar.style.left = seg.leftPx + 'px';
+      bar.style.top = (6 + seg.lane * LANE_HEIGHT) + 'px';
+      bar.style.width = seg.widthPx + 'px';
+      bar.title = `${seg.label} • ${seg.dateStr}`;
 
-      const text = document.createElement('div');
-      text.className = 'seg-label';
+      const text = document.createElement('span');
       text.textContent = seg.label;
+      bar.appendChild(text);
 
-      wrap.appendChild(bar);
-      wrap.appendChild(text);
-      track.appendChild(wrap);
+      track.appendChild(bar);
     });
 
     row.appendChild(track);
