@@ -5,14 +5,6 @@
   },
   "rows": [
     {
-      "partName": "testing - ignore jan",
-      "mainRange": {
-        "start": "2026-08-18",
-        "end": "2026-08-19"
-      },
-      "segments": []
-    },
-    {
       "partName": "AIB1.1 Main Hull R03",
       "mainRange": null,
       "segments": [
