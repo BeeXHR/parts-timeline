@@ -1,1 +1,352 @@
-{}
+{
+  "range": {
+    "start": "2026-08-03",
+    "end": "2026-09-03"
+  },
+  "rows": [
+    {
+      "partName": "AIB1.1 Main Hull R03",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-08-02",
+          "end": "2026-08-06",
+          "status": "Open"
+        }
+      ]
+    },
+    {
+      "partName": "1-23456-R99 Part/Assembly Name",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-07-16",
+          "end": "2026-07-16",
+          "status": "scheduled"
+        },
+        {
+          "label": "Elec DWG",
+          "start": "2026-07-16",
+          "end": "2026-07-16",
+          "status": "scheduled"
+        },
+        {
+          "label": "Mech DWG",
+          "start": "2026-07-16",
+          "end": "2026-07-16",
+          "status": "scheduled"
+        }
+      ]
+    },
+    {
+      "partName": "2-10043-R10_Battery Pod Assembly",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-07-16",
+          "end": "2026-07-28",
+          "status": "Open"
+        }
+      ]
+    },
+    {
+      "partName": "3-10016-R01_Waterlinked 3D-15 Sonar with Inline to B1",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-07-19",
+          "end": "2026-07-19",
+          "status": "done / assembly done"
+        }
+      ]
+    },
+    {
+      "partName": "AIB2 Foward Looking Sonar (FD1203EL-0918)",
+      "segments": []
+    },
+    {
+      "partName": "7-20358-R01_\nBlue Robotics Lumen Lights Cable Assembly",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-07-19",
+          "end": "2026-07-19",
+          "status": "done / assembly done"
+        },
+        {
+          "label": "2nd Build: FAI",
+          "start": "2026-07-28",
+          "end": "2026-07-30",
+          "status": "Open"
+        }
+      ]
+    },
+    {
+      "partName": "[SPECIAL] Side Fairing",
+      "segments": []
+    },
+    {
+      "partName": "AIB2 Tether Reel Box 300m",
+      "segments": []
+    },
+    {
+      "partName": "AIB2 Tether Reel Box 100m",
+      "segments": [
+        {
+          "label": "BOM- Mech Build without tether",
+          "start": "2026-07-19",
+          "end": "2026-07-19",
+          "status": "done / assembly done"
+        },
+        {
+          "label": "2nd Build: FAI",
+          "start": "2026-08-09",
+          "end": "2026-08-17",
+          "status": "Open"
+        }
+      ]
+    },
+    {
+      "partName": "9-10002-R01_Alpha Production Build General Arrangement",
+      "segments": []
+    },
+    {
+      "partName": "3-10016-R01_FD-M022 Thruster with Cobalt 14 Termination Kit Assembly",
+      "segments": []
+    },
+    {
+      "partName": "1-10508-R01_Fairing Assembly Middle",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-08-13",
+          "end": "2026-08-13",
+          "status": "Open"
+        }
+      ]
+    },
+    {
+      "partName": "Template",
+      "segments": []
+    },
+    {
+      "partName": "8-10153-R03 Tether Storage Case",
+      "segments": []
+    },
+    {
+      "partName": "8-10288-R01_GNSS Compass Assembly",
+      "segments": []
+    },
+    {
+      "partName": "8-10152-R04: Topside Box Assembly",
+      "segments": []
+    },
+    {
+      "partName": "8-10222-R02 Tether reel assembly with inline",
+      "segments": []
+    },
+    {
+      "partName": "4-20012-R02: Waterlinked A125 DVL with inline to B5 & B2",
+      "segments": []
+    },
+    {
+      "partName": "4-10017-R01: Oculus M750d Imaging Sonar with inline to B9",
+      "segments": []
+    },
+    {
+      "partName": "1-10262-R01 BlueRobotics Lumen Lights Short Skid Assembly",
+      "segments": []
+    },
+    {
+      "partName": "CP Probe and DigiCP Assemblies",
+      "segments": []
+    },
+    {
+      "partName": "Offshore Kit (Storage Case, and Kit Specific Subassemblies and Parts)",
+      "segments": []
+    },
+    {
+      "partName": "3312 buoyancy Blocks (1-20121-R01, 1-20122-R01, 1-20216-R01)",
+      "segments": []
+    },
+    {
+      "partName": "1-10001-R03_Main Frame Assembly",
+      "segments": []
+    },
+    {
+      "partName": "Marine Growth Measurement Probe- Short Skid",
+      "segments": []
+    },
+    {
+      "partName": "1-10142-R03_Short Skid HDPE Assembly",
+      "segments": []
+    },
+    {
+      "partName": "3-10014-R02 T500 T500 Assembly with LPIL3M Inline",
+      "segments": []
+    },
+    {
+      "partName": "7-20268-R03 & 7-20269-R03 Bluerobotics Lumen Lights Cable Assembly",
+      "segments": []
+    },
+    {
+      "partName": "1-10184-R01 IMENCO Assembly",
+      "segments": []
+    },
+    {
+      "partName": "1-10276-R01 Apollo X1 Assembly",
+      "segments": []
+    },
+    {
+      "partName": "Tether Reel Upgrade R06 to R07",
+      "segments": []
+    },
+    {
+      "partName": "8-10105-R03 Battery Charging Box",
+      "segments": []
+    },
+    {
+      "partName": "2-10014-R02: Navigation Housing Assembly",
+      "segments": []
+    },
+    {
+      "partName": "2-10001-R02: Main Hull",
+      "segments": []
+    },
+    {
+      "partName": "[UPGRADE] 2-10043-R09 to R10_Battery Pod Assembly Upgrade Plan",
+      "segments": [
+        {
+          "label": "1st Build: Training",
+          "start": "2026-06-09",
+          "end": "2026-06-11",
+          "status": "Closed"
+        },
+        {
+          "label": "2nd Build: FAI",
+          "start": "2026-07-16",
+          "end": "2026-07-22",
+          "status": "done / assembly done"
+        }
+      ]
+    },
+    {
+      "partName": "6-20084_6S7P Battery Pack with BMS",
+      "segments": []
+    },
+    {
+      "partName": "2-10043-R07 Battery Pod Assembly",
+      "segments": []
+    },
+    {
+      "partName": "8-10290-R01 Battery Charger Set - Barebones",
+      "segments": []
+    },
+    {
+      "partName": "8-10291-R01 Battery Discharger Set",
+      "segments": []
+    },
+    {
+      "partName": "9-10001-R03: Ikan Bilis Production Build General Arrangement",
+      "segments": []
+    },
+    {
+      "partName": "AIB2 INS DVL Sprintnav-U",
+      "segments": []
+    },
+    {
+      "partName": "AIB2 Topside",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-07-30",
+          "end": "2026-07-30",
+          "status": "Open"
+        }
+      ]
+    },
+    {
+      "partName": "AIB2 Battery Charging Box",
+      "segments": []
+    },
+    {
+      "partName": "AIB2 Battery",
+      "segments": []
+    },
+    {
+      "partName": "1-10500-R01 Frame Assembly",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-08-13",
+          "end": "2026-08-13",
+          "status": "Open"
+        },
+        {
+          "label": "1st Build: Training",
+          "start": "2026-08-10",
+          "end": "2026-08-10",
+          "status": "scheduled"
+        }
+      ]
+    },
+    {
+      "partName": "2-10168-R01_Antenna Hull",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-07-23",
+          "end": "2026-07-23",
+          "status": "Open"
+        },
+        {
+          "label": "1st Build: Training",
+          "start": "2026-07-28",
+          "end": "2026-07-29",
+          "status": "Open"
+        }
+      ]
+    },
+    {
+      "partName": "2-10164-R01_Main Hull Assembly",
+      "segments": [
+        {
+          "label": "BOM",
+          "start": "2026-07-30",
+          "end": "2026-07-30",
+          "status": "Open"
+        },
+        {
+          "label": "2nd Build: FAI (Pdxn Build 1) SN2",
+          "start": "2026-07-12",
+          "end": "2026-07-12",
+          "status": "in progress"
+        }
+      ]
+    },
+    {
+      "partName": "[UPGRADE] 8-20103-R01 TO R02: Velcro Strap Holder",
+      "segments": []
+    },
+    {
+      "partName": "[UPGRADE] 7-20003-R02 to R03: B9 to Oculus Imaging Sonar",
+      "segments": []
+    },
+    {
+      "partName": "[UPGRADE] 2-10014-R01 to R02: Navigation Housing Assembly",
+      "segments": []
+    },
+    {
+      "partName": "[UPGRADE] 9-10001-R02 to R03: Ikan Bilis Production Build General Arrangement",
+      "segments": []
+    },
+    {
+      "partName": "[UPGRADE] 2-10001-R01 to R02: Main Hull",
+      "segments": []
+    },
+    {
+      "partName": "4-10016-R01 Imagenex Assembly",
+      "segments": []
+    }
+  ]
+}
