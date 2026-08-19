@@ -5,6 +5,10 @@
   },
   "rows": [
     {
+      "partName": "testing - ignore jan",
+      "segments": []
+    },
+    {
       "partName": "AIB1.1 Main Hull R03",
       "segments": [
         {
