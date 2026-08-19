@@ -5,9 +5,13 @@
 <title>Parts Timeline</title>
 <style>
   body { font-family: -apple-system, sans-serif; margin: 24px; color: #1a1a1a; }
-  .legend { display: flex; gap: 16px; margin-bottom: 16px; font-size: 12px; color: #555; }
+  .legend { display: flex; gap: 16px; margin-bottom: 12px; font-size: 12px; color: #555; }
   .legend span { display: inline-flex; align-items: center; gap: 5px; }
   .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .controls { display: flex; gap: 8px; margin-bottom: 12px; }
+  .controls button { font-size: 12px; padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px;
+                      background: #fff; cursor: pointer; }
+  .controls button:hover { background: #f5f5f5; }
   .chart-scroll { overflow-x: auto; border: 1px solid #eee; }
   .chart-inner { position: relative; }
   .ruler { display: flex; position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; z-index: 3; }
@@ -37,6 +41,11 @@
   <span><i style="background:#e8f0fe;border:1px solid #a9c6f5"></i> Scheduled</span>
   <span><i style="background:#f2f2f2;border:1px solid #ccc"></i> Open</span>
 </div>
+<div class="controls">
+  <button id="btnBack">◀ Back 1 month</button>
+  <button id="btnToday">Today</button>
+  <button id="btnForward">Forward 1 month ▶</button>
+</div>
 <div class="chart-scroll">
   <div class="chart-inner" id="chartInner"></div>
 </div>
@@ -44,7 +53,7 @@
 <script>
 const PX_PER_DAY = 22;
 const LANE_HEIGHT = 28;
-const PAD_WEEKS = 2;
+const PAD_WEEKS = 26; // ~6 months buffer on each side for scrolling room
 
 fetch('data.json?t=' + Date.now())
   .then(r => r.json())
@@ -71,7 +80,6 @@ function render(data) {
   const chartInner = document.getElementById('chartInner');
   chartInner.style.width = (totalWidthPx + 220) + 'px';
 
-  // Ruler
   const ruler = document.createElement('div');
   ruler.className = 'ruler';
   const rulerSpacer = document.createElement('div');
@@ -90,7 +98,6 @@ function render(data) {
   ruler.appendChild(rulerTrack);
   chartInner.appendChild(ruler);
 
-  // Rows
   data.rows.forEach(r => {
     const row = document.createElement('div');
     row.className = 'row';
@@ -115,7 +122,6 @@ function render(data) {
       return;
     }
 
-    // Compute pixel position + estimated rendered width for each segment
     const font = '12px -apple-system, sans-serif';
     const items = r.segments.map(s => {
       const start = new Date(s.start + 'T00:00:00').getTime();
@@ -123,11 +129,10 @@ function render(data) {
       const leftPx = ((start - rangeStart) / msPerDay) * PX_PER_DAY;
       const dateStr = `${formatDateShort(s.start)} – ${formatDateShort(s.end)}`;
       const textWidth = measureTextWidth(s.label, font);
-      const renderedWidth = 20 + 6 + textWidth + 10; // icon + gap + text + margin
+      const renderedWidth = 20 + 6 + textWidth + 10;
       return { ...s, leftPx, renderedWidth, dateStr };
     }).sort((a, b) => a.leftPx - b.leftPx);
 
-    // Assign lanes to avoid overlap
     const laneEnds = [];
     items.forEach(seg => {
       let laneIdx = laneEnds.findIndex(end => seg.leftPx >= end + 8);
@@ -166,23 +171,31 @@ function render(data) {
     chartInner.appendChild(row);
   });
 
-  // Today marker
   const now = Date.now();
+  let todayLeftPx = null;
   if (now >= rangeStart && now <= rangeEnd) {
-    const leftPx = 220 + ((now - rangeStart) / msPerDay) * PX_PER_DAY;
+    todayLeftPx = 220 + ((now - rangeStart) / msPerDay) * PX_PER_DAY;
     const line = document.createElement('div');
     line.className = 'today-line';
-    line.style.left = leftPx + 'px';
+    line.style.left = todayLeftPx + 'px';
     const dot = document.createElement('div');
     dot.className = 'today-dot';
     line.appendChild(dot);
     chartInner.appendChild(line);
-
-    requestAnimationFrame(() => {
-      const scrollContainer = document.querySelector('.chart-scroll');
-      scrollContainer.scrollLeft = Math.max(0, leftPx - scrollContainer.clientWidth / 2);
-    });
   }
+
+  const scrollContainer = document.querySelector('.chart-scroll');
+  const scrollToToday = () => {
+    if (todayLeftPx !== null) {
+      scrollContainer.scrollLeft = Math.max(0, todayLeftPx - scrollContainer.clientWidth / 2);
+    }
+  };
+  requestAnimationFrame(scrollToToday);
+
+  const monthPx = 30 * PX_PER_DAY;
+  document.getElementById('btnBack').onclick = () => { scrollContainer.scrollLeft -= monthPx; };
+  document.getElementById('btnForward').onclick = () => { scrollContainer.scrollLeft += monthPx; };
+  document.getElementById('btnToday').onclick = scrollToToday;
 }
 </script>
 </body>
