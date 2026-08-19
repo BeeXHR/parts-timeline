@@ -18,12 +18,12 @@
   .ruler { display: flex; position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; z-index: 3; }
   .ruler-label-spacer { width: 220px; flex-shrink: 0; position: sticky; left: 0; background: #fff; z-index: 4; }
   .ruler-tick { position: absolute; top: 0; font-size: 12px; color: #888; padding: 6px 0 6px 6px; border-left: 1px solid #ddd; height: 100%; }
-  .row { display: flex; border-top: 1px solid #eee; }
+  .row { display: flex; border-top: 1px solid #eee; min-height: 46px; }
   .label { width: 220px; flex-shrink: 0; padding: 10px 12px 10px 0; position: sticky; left: 0; background: #fff; z-index: 2; }
   .label .name { font-size: 13px; font-weight: 500; }
   .label .dates { font-size: 11px; color: #999; margin-top: 2px; }
-  .track { position: relative; }
-  .seg-bar { position: absolute; height: 20px; border-radius: 5px; border: 1px solid; box-sizing: border-box;
+  .track { position: relative; height: 46px; }
+  .seg-bar { position: absolute; top: 13px; height: 20px; border-radius: 5px; border: 1px solid; box-sizing: border-box;
              display: flex; align-items: center; padding: 0 6px; overflow: hidden; white-space: nowrap;
              font-size: 12px; cursor: default; }
   .seg-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -57,7 +57,6 @@
 
 <script>
 const PX_PER_DAY = 22;
-const LANE_HEIGHT = 26;
 const MIN_BAR_PX = 20;
 const PAD_WEEKS = 26;
 
@@ -133,49 +132,26 @@ function render(data) {
       empty.className = 'empty-note';
       empty.textContent = 'No dates scheduled yet';
       track.appendChild(empty);
-      row.style.minHeight = '48px';
       row.appendChild(track);
       chartInner.appendChild(row);
       return;
     }
 
-    // Compute REAL date-based left/width in px — no label text involved here at all.
-    const items = r.segments.map(s => {
+    r.segments.forEach(s => {
       const start = new Date(s.start + 'T00:00:00').getTime();
       const end = new Date(s.end + 'T00:00:00').getTime();
       const leftPx = ((start - rangeStart) / msPerDay) * PX_PER_DAY;
       const widthPx = Math.max(((end - start) / msPerDay) * PX_PER_DAY, MIN_BAR_PX);
       const dateStr = `${formatDateShort(s.start)} – ${formatDateShort(s.end)}`;
-      return { ...s, leftPx, widthPx, dateStr };
-    }).sort((a, b) => a.leftPx - b.leftPx);
 
-    // Lane assignment based ONLY on real date overlap, not label width.
-    // A tiny 2px buffer just avoids two bars sharing a pixel edge, not a visual/label gap.
-    const laneEnds = [];
-    items.forEach(seg => {
-      let laneIdx = laneEnds.findIndex(end => seg.leftPx >= end);
-      if (laneIdx === -1) {
-        laneIdx = laneEnds.length;
-        laneEnds.push(seg.leftPx + seg.widthPx + 2);
-      } else {
-        laneEnds[laneIdx] = seg.leftPx + seg.widthPx + 2;
-      }
-      seg.lane = laneIdx;
-    });
-
-    const maxLanes = laneEnds.length;
-    row.style.minHeight = (maxLanes * LANE_HEIGHT + 20) + 'px';
-
-    items.forEach(seg => {
       const bar = document.createElement('div');
-      bar.className = 'seg-bar ' + (seg.status || 'open');
-      bar.style.left = seg.leftPx + 'px';
-      bar.style.top = (6 + seg.lane * LANE_HEIGHT) + 'px';
-      bar.style.width = seg.widthPx + 'px';
-      bar.title = `${seg.label} • ${seg.dateStr}`;
+      bar.className = 'seg-bar ' + (s.status || 'open');
+      bar.style.left = leftPx + 'px';
+      bar.style.width = widthPx + 'px';
+      bar.title = `${s.label} • ${dateStr}`;
 
       const text = document.createElement('span');
-      text.textContent = seg.label;
+      text.textContent = s.label;
       bar.appendChild(text);
 
       track.appendChild(bar);
