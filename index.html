@@ -12,13 +12,14 @@
   .ruler div { flex: 1; border-left: 1px solid #ddd; padding-left: 6px; }
   .row { display: flex; align-items: center; min-height: 52px; border-top: 1px solid #eee; }
   .label { width: 220px; flex-shrink: 0; font-size: 13px; font-weight: 500; padding-right: 12px; }
-  .track { position: relative; flex: 1; height: 36px; }
+  .track { position: relative; flex: 1; height: 36px; display: flex; align-items: center; }
   .seg { position: absolute; top: 4px; height: 28px; border-radius: 6px; display: flex; align-items: center;
          padding: 0 8px; overflow: hidden; white-space: nowrap; font-size: 12px; border: 1px solid; }
   .seg.done { background: #e6f4ea; border-color: #a8d5b5; color: #1e6b3c; }
   .seg.in_progress { background: #fff4e0; border-color: #f0c986; color: #8a5a00; }
   .seg.open { background: #f2f2f2; border-color: #ccc; color: #555; }
   .seg.scheduled { background: #e8f0fe; border-color: #a9c6f5; color: #1a4d99; }
+  .empty-note { font-size: 12px; color: #aaa; padding-left: 4px; }
 </style>
 </head>
 <body>
@@ -47,9 +48,10 @@ function render(data) {
   document.body.insertBefore(legend, document.getElementById('ruler'));
 
   const ruler = document.getElementById('ruler');
-  const weeks = 5;
-  for (let i = 0; i < weeks; i++) {
-    const d = new Date(rangeStart + (totalMs / weeks) * i);
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const totalWeeks = Math.max(1, Math.ceil(totalMs / msPerWeek));
+  for (let i = 0; i < totalWeeks; i++) {
+    const d = new Date(rangeStart + msPerWeek * i);
     const div = document.createElement('div');
     div.textContent = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
     ruler.appendChild(div);
@@ -68,19 +70,26 @@ function render(data) {
     const track = document.createElement('div');
     track.className = 'track';
 
-    r.segments.forEach(s => {
-      const start = new Date(s.start).getTime();
-      const end = new Date(s.end).getTime();
-      const left = ((start - rangeStart) / totalMs) * 100;
-      const width = ((end - start) / totalMs) * 100;
+    if (!r.segments || r.segments.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-note';
+      empty.textContent = 'No dates scheduled yet';
+      track.appendChild(empty);
+    } else {
+      r.segments.forEach(s => {
+        const start = new Date(s.start).getTime();
+        const end = new Date(s.end).getTime();
+        const left = ((start - rangeStart) / totalMs) * 100;
+        const width = ((end - start) / totalMs) * 100;
 
-      const seg = document.createElement('div');
-      seg.className = 'seg ' + (s.status || 'open');
-      seg.style.left = left + '%';
-      seg.style.width = width + '%';
-      seg.textContent = s.label;
-      track.appendChild(seg);
-    });
+        const seg = document.createElement('div');
+        seg.className = 'seg ' + (s.status || 'open');
+        seg.style.left = left + '%';
+        seg.style.width = Math.max(width, 1) + '%';
+        seg.textContent = s.label;
+        track.appendChild(seg);
+      });
+    }
 
     row.appendChild(track);
     container.appendChild(row);
