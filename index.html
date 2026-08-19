@@ -8,61 +8,89 @@
   .legend { display: flex; gap: 16px; margin-bottom: 16px; font-size: 12px; color: #555; }
   .legend span { display: inline-flex; align-items: center; gap: 5px; }
   .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-  .ruler { display: flex; margin-bottom: 6px; padding-left: 220px; font-size: 12px; color: #888; }
-  .ruler div { flex: 1; border-left: 1px solid #ddd; padding-left: 6px; }
-  .row { display: flex; align-items: center; min-height: 40px; border-top: 1px solid #eee; padding: 6px 0; }
-  .label { width: 220px; flex-shrink: 0; font-size: 13px; font-weight: 500; padding-right: 12px; }
-  .track { position: relative; flex: 1; min-height: 28px; display: flex; align-items: center; }
-  .seg-wrap { position: absolute; top: 0; display: flex; align-items: center; height: 28px; cursor: default; }
-  .seg-bar { width: 22px; height: 22px; border-radius: 5px; border: 1px solid; flex-shrink: 0; }
+  .chart-scroll { overflow-x: auto; border: 1px solid #eee; }
+  .chart-inner { position: relative; }
+  .ruler { display: flex; position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; z-index: 3; }
+  .ruler-label-spacer { width: 220px; flex-shrink: 0; position: sticky; left: 0; background: #fff; z-index: 4; }
+  .ruler-tick { position: absolute; top: 0; font-size: 12px; color: #888; padding: 6px 0 6px 6px; border-left: 1px solid #ddd; height: 100%; }
+  .row { display: flex; border-top: 1px solid #eee; }
+  .label { width: 220px; flex-shrink: 0; font-size: 13px; font-weight: 500; padding: 10px 12px 10px 0; position: sticky; left: 0; background: #fff; z-index: 2; }
+  .track { position: relative; }
+  .seg-wrap { position: absolute; display: flex; align-items: center; height: 26px; cursor: default; }
+  .seg-bar { width: 20px; height: 20px; border-radius: 5px; border: 1px solid; flex-shrink: 0; }
   .seg-bar.done { background: #e6f4ea; border-color: #a8d5b5; }
   .seg-bar.in_progress { background: #fff4e0; border-color: #f0c986; }
   .seg-bar.open { background: #f2f2f2; border-color: #ccc; }
   .seg-bar.scheduled { background: #e8f0fe; border-color: #a9c6f5; }
   .seg-label { margin-left: 6px; font-size: 12px; color: #333; white-space: nowrap; }
-  .empty-note { font-size: 12px; color: #aaa; padding-left: 4px; }
+  .empty-note { font-size: 12px; color: #aaa; padding: 10px 0; }
+  .today-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #e0392b; z-index: 1; }
+  .today-dot { position: absolute; top: -8px; width: 14px; height: 14px; background: #e0392b; border-radius: 50%;
+               transform: translateX(-50%); left: 0; }
 </style>
 </head>
 <body>
 <h2>Parts Timeline</h2>
-<div class="ruler" id="ruler"></div>
-<div id="rows"></div>
+<div class="legend">
+  <span><i style="background:#e6f4ea;border:1px solid #a8d5b5"></i> Done</span>
+  <span><i style="background:#fff4e0;border:1px solid #f0c986"></i> In progress</span>
+  <span><i style="background:#e8f0fe;border:1px solid #a9c6f5"></i> Scheduled</span>
+  <span><i style="background:#f2f2f2;border:1px solid #ccc"></i> Open</span>
+</div>
+<div class="chart-scroll">
+  <div class="chart-inner" id="chartInner"></div>
+</div>
 
 <script>
+const PX_PER_DAY = 22;
+const LANE_HEIGHT = 28;
+const PAD_WEEKS = 2;
+
 fetch('data.json?t=' + Date.now())
   .then(r => r.json())
   .then(render);
 
-function formatDate(dstr) {
-  return new Date(dstr + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+function formatDateShort(dstr) {
+  return new Date(dstr + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+
+function measureTextWidth(text, font) {
+  const canvas = measureTextWidth._canvas || (measureTextWidth._canvas = document.createElement('canvas'));
+  const ctx = canvas.getContext('2d');
+  ctx.font = font;
+  return ctx.measureText(text).width;
 }
 
 function render(data) {
-  const rangeStart = new Date(data.range.start).getTime();
-  const rangeEnd = new Date(data.range.end).getTime();
-  const totalMs = rangeEnd - rangeStart;
+  const msPerDay = 24 * 60 * 60 * 1000;
+  let rangeStart = new Date(data.range.start).getTime() - PAD_WEEKS * 7 * msPerDay;
+  let rangeEnd = new Date(data.range.end).getTime() + PAD_WEEKS * 7 * msPerDay;
+  const totalDays = Math.ceil((rangeEnd - rangeStart) / msPerDay);
+  const totalWidthPx = totalDays * PX_PER_DAY;
 
-  const legend = document.createElement('div');
-  legend.className = 'legend';
-  legend.innerHTML = `
-    <span><i style="background:#e6f4ea;border:1px solid #a8d5b5"></i> Done</span>
-    <span><i style="background:#fff4e0;border:1px solid #f0c986"></i> In progress</span>
-    <span><i style="background:#e8f0fe;border:1px solid #a9c6f5"></i> Scheduled</span>
-    <span><i style="background:#f2f2f2;border:1px solid #ccc"></i> Open</span>
-  `;
-  document.body.insertBefore(legend, document.getElementById('ruler'));
+  const chartInner = document.getElementById('chartInner');
+  chartInner.style.width = (totalWidthPx + 220) + 'px';
 
-  const ruler = document.getElementById('ruler');
-  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-  const totalWeeks = Math.max(1, Math.ceil(totalMs / msPerWeek));
+  // Ruler
+  const ruler = document.createElement('div');
+  ruler.className = 'ruler';
+  const rulerSpacer = document.createElement('div');
+  rulerSpacer.className = 'ruler-label-spacer';
+  ruler.appendChild(rulerSpacer);
+  const rulerTrack = document.createElement('div');
+  rulerTrack.style.cssText = `position:relative; width:${totalWidthPx}px; height:28px;`;
+  const totalWeeks = Math.ceil(totalDays / 7);
   for (let i = 0; i < totalWeeks; i++) {
-    const d = new Date(rangeStart + msPerWeek * i);
-    const div = document.createElement('div');
-    div.textContent = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-    ruler.appendChild(div);
+    const tick = document.createElement('div');
+    tick.className = 'ruler-tick';
+    tick.style.left = (i * 7 * PX_PER_DAY) + 'px';
+    tick.textContent = new Date(rangeStart + i * 7 * msPerDay).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    rulerTrack.appendChild(tick);
   }
+  ruler.appendChild(rulerTrack);
+  chartInner.appendChild(ruler);
 
-  const container = document.getElementById('rows');
+  // Rows
   data.rows.forEach(r => {
     const row = document.createElement('div');
     row.className = 'row';
@@ -74,39 +102,87 @@ function render(data) {
 
     const track = document.createElement('div');
     track.className = 'track';
-    row.appendChild(track);
-    container.appendChild(row);
+    track.style.width = totalWidthPx + 'px';
 
     if (!r.segments || r.segments.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'empty-note';
       empty.textContent = 'No dates scheduled yet';
       track.appendChild(empty);
+      row.style.minHeight = '40px';
+      row.appendChild(track);
+      chartInner.appendChild(row);
       return;
     }
 
-    r.segments.forEach(s => {
+    // Compute pixel position + estimated rendered width for each segment
+    const font = '12px -apple-system, sans-serif';
+    const items = r.segments.map(s => {
       const start = new Date(s.start + 'T00:00:00').getTime();
       const end = new Date(s.end + 'T00:00:00').getTime();
-      const leftPct = ((start - rangeStart) / totalMs) * 100;
+      const leftPx = ((start - rangeStart) / msPerDay) * PX_PER_DAY;
+      const dateStr = `${formatDateShort(s.start)} – ${formatDateShort(s.end)}`;
+      const textWidth = measureTextWidth(s.label, font);
+      const renderedWidth = 20 + 6 + textWidth + 10; // icon + gap + text + margin
+      return { ...s, leftPx, renderedWidth, dateStr };
+    }).sort((a, b) => a.leftPx - b.leftPx);
 
+    // Assign lanes to avoid overlap
+    const laneEnds = [];
+    items.forEach(seg => {
+      let laneIdx = laneEnds.findIndex(end => seg.leftPx >= end + 8);
+      if (laneIdx === -1) {
+        laneIdx = laneEnds.length;
+        laneEnds.push(seg.leftPx + seg.renderedWidth);
+      } else {
+        laneEnds[laneIdx] = seg.leftPx + seg.renderedWidth;
+      }
+      seg.lane = laneIdx;
+    });
+
+    const maxLanes = laneEnds.length;
+    row.style.minHeight = (maxLanes * LANE_HEIGHT + 12) + 'px';
+
+    items.forEach(seg => {
       const wrap = document.createElement('div');
       wrap.className = 'seg-wrap';
-      wrap.style.left = leftPct + '%';
-      wrap.title = `${s.label} • ${formatDate(s.start)} – ${formatDate(s.end)}`;
+      wrap.style.left = seg.leftPx + 'px';
+      wrap.style.top = (6 + seg.lane * LANE_HEIGHT) + 'px';
+      wrap.title = `${seg.label} • ${seg.dateStr}`;
 
       const bar = document.createElement('div');
-      bar.className = 'seg-bar ' + (s.status || 'open');
+      bar.className = 'seg-bar ' + (seg.status || 'open');
 
       const text = document.createElement('div');
       text.className = 'seg-label';
-      text.textContent = s.label;
+      text.textContent = seg.label;
 
       wrap.appendChild(bar);
       wrap.appendChild(text);
       track.appendChild(wrap);
     });
+
+    row.appendChild(track);
+    chartInner.appendChild(row);
   });
+
+  // Today marker
+  const now = Date.now();
+  if (now >= rangeStart && now <= rangeEnd) {
+    const leftPx = 220 + ((now - rangeStart) / msPerDay) * PX_PER_DAY;
+    const line = document.createElement('div');
+    line.className = 'today-line';
+    line.style.left = leftPx + 'px';
+    const dot = document.createElement('div');
+    dot.className = 'today-dot';
+    line.appendChild(dot);
+    chartInner.appendChild(line);
+
+    requestAnimationFrame(() => {
+      const scrollContainer = document.querySelector('.chart-scroll');
+      scrollContainer.scrollLeft = Math.max(0, leftPx - scrollContainer.clientWidth / 2);
+    });
+  }
 }
 </script>
 </body>
