@@ -8,17 +8,20 @@
   .legend { display: flex; gap: 16px; margin-bottom: 12px; font-size: 12px; color: #555; }
   .legend span { display: inline-flex; align-items: center; gap: 5px; }
   .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-  .controls { display: flex; gap: 8px; margin-bottom: 12px; }
+  .controls { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
   .controls button { font-size: 12px; padding: 6px 12px; border: 1px solid #ccc; border-radius: 6px;
                       background: #fff; cursor: pointer; }
   .controls button:hover { background: #f5f5f5; }
+  .controls .refresh { margin-left: auto; }
   .chart-scroll { overflow-x: auto; border: 1px solid #eee; }
   .chart-inner { position: relative; }
   .ruler { display: flex; position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; z-index: 3; }
   .ruler-label-spacer { width: 220px; flex-shrink: 0; position: sticky; left: 0; background: #fff; z-index: 4; }
   .ruler-tick { position: absolute; top: 0; font-size: 12px; color: #888; padding: 6px 0 6px 6px; border-left: 1px solid #ddd; height: 100%; }
   .row { display: flex; border-top: 1px solid #eee; }
-  .label { width: 220px; flex-shrink: 0; font-size: 13px; font-weight: 500; padding: 10px 12px 10px 0; position: sticky; left: 0; background: #fff; z-index: 2; }
+  .label { width: 220px; flex-shrink: 0; padding: 10px 12px 10px 0; position: sticky; left: 0; background: #fff; z-index: 2; }
+  .label .name { font-size: 13px; font-weight: 500; }
+  .label .dates { font-size: 11px; color: #999; margin-top: 2px; }
   .track { position: relative; }
   .seg-wrap { position: absolute; display: flex; align-items: center; height: 26px; cursor: default; }
   .seg-bar { width: 20px; height: 20px; border-radius: 5px; border: 1px solid; flex-shrink: 0; }
@@ -45,6 +48,7 @@
   <button id="btnBack">◀ Back 1 month</button>
   <button id="btnToday">Today</button>
   <button id="btnForward">Forward 1 month ▶</button>
+  <button id="btnRefresh" class="refresh">⟳ Refresh data</button>
 </div>
 <div class="chart-scroll">
   <div class="chart-inner" id="chartInner"></div>
@@ -53,11 +57,20 @@
 <script>
 const PX_PER_DAY = 22;
 const LANE_HEIGHT = 28;
-const PAD_WEEKS = 26; // ~6 months buffer on each side for scrolling room
+const PAD_WEEKS = 26;
 
-fetch('data.json?t=' + Date.now())
-  .then(r => r.json())
-  .then(render);
+loadAndRender();
+
+document.getElementById('btnRefresh').onclick = loadAndRender;
+
+function loadAndRender() {
+  fetch('data.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('chartInner').innerHTML = '';
+      render(data);
+    });
+}
 
 function formatDateShort(dstr) {
   return new Date(dstr + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
@@ -104,7 +117,17 @@ function render(data) {
 
     const label = document.createElement('div');
     label.className = 'label';
-    label.textContent = r.partName;
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = r.partName;
+    label.appendChild(name);
+
+    if (r.mainRange) {
+      const dates = document.createElement('div');
+      dates.className = 'dates';
+      dates.textContent = `${formatDateShort(r.mainRange.start)} – ${formatDateShort(r.mainRange.end)}`;
+      label.appendChild(dates);
+    }
     row.appendChild(label);
 
     const track = document.createElement('div');
@@ -116,7 +139,7 @@ function render(data) {
       empty.className = 'empty-note';
       empty.textContent = 'No dates scheduled yet';
       track.appendChild(empty);
-      row.style.minHeight = '40px';
+      row.style.minHeight = '48px';
       row.appendChild(track);
       chartInner.appendChild(row);
       return;
@@ -146,7 +169,7 @@ function render(data) {
     });
 
     const maxLanes = laneEnds.length;
-    row.style.minHeight = (maxLanes * LANE_HEIGHT + 12) + 'px';
+    row.style.minHeight = (maxLanes * LANE_HEIGHT + 20) + 'px';
 
     items.forEach(seg => {
       const wrap = document.createElement('div');
