@@ -10,17 +10,16 @@
   .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
   .ruler { display: flex; margin-bottom: 6px; padding-left: 220px; font-size: 12px; color: #888; }
   .ruler div { flex: 1; border-left: 1px solid #ddd; padding-left: 6px; }
-  .row { display: flex; align-items: center; min-height: 52px; border-top: 1px solid #eee; }
+  .row { display: flex; align-items: center; min-height: 40px; border-top: 1px solid #eee; padding: 6px 0; }
   .label { width: 220px; flex-shrink: 0; font-size: 13px; font-weight: 500; padding-right: 12px; }
-  .track { position: relative; flex: 1; height: 36px; }
-  .seg { position: absolute; top: 4px; height: 28px; border-radius: 6px; display: flex; align-items: center;
-         padding: 0 8px; overflow: hidden; white-space: nowrap; font-size: 12px; border: 1px solid; box-sizing: border-box; }
-  .seg.done { background: #e6f4ea; border-color: #a8d5b5; color: #1e6b3c; }
-  .seg.in_progress { background: #fff4e0; border-color: #f0c986; color: #8a5a00; }
-  .seg.open { background: #f2f2f2; border-color: #ccc; color: #555; }
-  .seg.scheduled { background: #e8f0fe; border-color: #a9c6f5; color: #1a4d99; }
-  .seg-label-outside { position: absolute; top: 8px; font-size: 12px; color: #444; white-space: nowrap;
-                        pointer-events: none; }
+  .track { position: relative; flex: 1; min-height: 28px; display: flex; align-items: center; }
+  .seg-wrap { position: absolute; top: 0; display: flex; align-items: center; height: 28px; cursor: default; }
+  .seg-bar { width: 22px; height: 22px; border-radius: 5px; border: 1px solid; flex-shrink: 0; }
+  .seg-bar.done { background: #e6f4ea; border-color: #a8d5b5; }
+  .seg-bar.in_progress { background: #fff4e0; border-color: #f0c986; }
+  .seg-bar.open { background: #f2f2f2; border-color: #ccc; }
+  .seg-bar.scheduled { background: #e8f0fe; border-color: #a9c6f5; }
+  .seg-label { margin-left: 6px; font-size: 12px; color: #333; white-space: nowrap; }
   .empty-note { font-size: 12px; color: #aaa; padding-left: 4px; }
 </style>
 </head>
@@ -33,6 +32,10 @@
 fetch('data.json?t=' + Date.now())
   .then(r => r.json())
   .then(render);
+
+function formatDate(dstr) {
+  return new Date(dstr + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
 
 function render(data) {
   const rangeStart = new Date(data.range.start).getTime();
@@ -83,31 +86,25 @@ function render(data) {
     }
 
     r.segments.forEach(s => {
-      const start = new Date(s.start).getTime();
-      const end = new Date(s.end).getTime();
+      const start = new Date(s.start + 'T00:00:00').getTime();
+      const end = new Date(s.end + 'T00:00:00').getTime();
       const leftPct = ((start - rangeStart) / totalMs) * 100;
-      const widthPct = Math.max(((end - start) / totalMs) * 100, 1);
 
-      const seg = document.createElement('div');
-      seg.className = 'seg ' + (s.status || 'open');
-      seg.style.left = leftPct + '%';
-      seg.style.width = widthPct + '%';
-      seg.title = s.label;
-      seg.textContent = s.label;
-      track.appendChild(seg);
+      const wrap = document.createElement('div');
+      wrap.className = 'seg-wrap';
+      wrap.style.left = leftPct + '%';
+      wrap.title = `${s.label} • ${formatDate(s.start)} – ${formatDate(s.end)}`;
 
-      // After adding to the DOM, check if the text actually fits.
-      // If not, hide the inside text and show it as a label to the right instead.
-      requestAnimationFrame(() => {
-        if (seg.scrollWidth > seg.clientWidth + 2) {
-          seg.textContent = '';
-          const outside = document.createElement('div');
-          outside.className = 'seg-label-outside';
-          outside.textContent = s.label;
-          outside.style.left = 'calc(' + leftPct + '% + ' + seg.offsetWidth + 'px + 6px)';
-          track.appendChild(outside);
-        }
-      });
+      const bar = document.createElement('div');
+      bar.className = 'seg-bar ' + (s.status || 'open');
+
+      const text = document.createElement('div');
+      text.className = 'seg-label';
+      text.textContent = s.label;
+
+      wrap.appendChild(bar);
+      wrap.appendChild(text);
+      track.appendChild(wrap);
     });
   });
 }
