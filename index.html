@@ -12,13 +12,15 @@
   .ruler div { flex: 1; border-left: 1px solid #ddd; padding-left: 6px; }
   .row { display: flex; align-items: center; min-height: 52px; border-top: 1px solid #eee; }
   .label { width: 220px; flex-shrink: 0; font-size: 13px; font-weight: 500; padding-right: 12px; }
-  .track { position: relative; flex: 1; height: 36px; display: flex; align-items: center; }
+  .track { position: relative; flex: 1; height: 36px; }
   .seg { position: absolute; top: 4px; height: 28px; border-radius: 6px; display: flex; align-items: center;
-         padding: 0 8px; overflow: hidden; white-space: nowrap; font-size: 12px; border: 1px solid; }
+         padding: 0 8px; overflow: hidden; white-space: nowrap; font-size: 12px; border: 1px solid; box-sizing: border-box; }
   .seg.done { background: #e6f4ea; border-color: #a8d5b5; color: #1e6b3c; }
   .seg.in_progress { background: #fff4e0; border-color: #f0c986; color: #8a5a00; }
   .seg.open { background: #f2f2f2; border-color: #ccc; color: #555; }
   .seg.scheduled { background: #e8f0fe; border-color: #a9c6f5; color: #1a4d99; }
+  .seg-label-outside { position: absolute; top: 8px; font-size: 12px; color: #444; white-space: nowrap;
+                        pointer-events: none; }
   .empty-note { font-size: 12px; color: #aaa; padding-left: 4px; }
 </style>
 </head>
@@ -69,30 +71,44 @@ function render(data) {
 
     const track = document.createElement('div');
     track.className = 'track';
+    row.appendChild(track);
+    container.appendChild(row);
 
     if (!r.segments || r.segments.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'empty-note';
       empty.textContent = 'No dates scheduled yet';
       track.appendChild(empty);
-    } else {
-      r.segments.forEach(s => {
-        const start = new Date(s.start).getTime();
-        const end = new Date(s.end).getTime();
-        const left = ((start - rangeStart) / totalMs) * 100;
-        const width = ((end - start) / totalMs) * 100;
-
-        const seg = document.createElement('div');
-        seg.className = 'seg ' + (s.status || 'open');
-        seg.style.left = left + '%';
-        seg.style.width = Math.max(width, 1) + '%';
-        seg.textContent = s.label;
-        track.appendChild(seg);
-      });
+      return;
     }
 
-    row.appendChild(track);
-    container.appendChild(row);
+    r.segments.forEach(s => {
+      const start = new Date(s.start).getTime();
+      const end = new Date(s.end).getTime();
+      const leftPct = ((start - rangeStart) / totalMs) * 100;
+      const widthPct = Math.max(((end - start) / totalMs) * 100, 1);
+
+      const seg = document.createElement('div');
+      seg.className = 'seg ' + (s.status || 'open');
+      seg.style.left = leftPct + '%';
+      seg.style.width = widthPct + '%';
+      seg.title = s.label;
+      seg.textContent = s.label;
+      track.appendChild(seg);
+
+      // After adding to the DOM, check if the text actually fits.
+      // If not, hide the inside text and show it as a label to the right instead.
+      requestAnimationFrame(() => {
+        if (seg.scrollWidth > seg.clientWidth + 2) {
+          seg.textContent = '';
+          const outside = document.createElement('div');
+          outside.className = 'seg-label-outside';
+          outside.textContent = s.label;
+          outside.style.left = 'calc(' + leftPct + '% + ' + seg.offsetWidth + 'px + 6px)';
+          track.appendChild(outside);
+        }
+      });
+    });
   });
 }
 </script>
