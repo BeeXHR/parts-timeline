@@ -1,12 +1,20 @@
 {
   "range": {
-    "start": "2026-06-10",
-    "end": "2026-08-18"
+    "start": "2025-06-06",
+    "end": "2026-09-11"
   },
   "rows": [
     {
       "partName": "testing - ignore jan",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) testing - ignore jan",
+          "start": "2026-08-18",
+          "end": "2026-08-19",
+          "status": "scheduled",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "AIB1.1 Main Hull R03",
@@ -74,6 +82,13 @@
       "partName": "AIB2 Tether Reel Box 100m",
       "segments": [
         {
+          "label": "(Overall) AIB2 Tether Reel Box 100m",
+          "start": "2026-08-10",
+          "end": "2026-08-10",
+          "status": "scheduled",
+          "isMain": true
+        },
+        {
           "label": "BOM- Mech Build without tether",
           "start": "2026-07-20",
           "end": "2026-07-20",
@@ -89,7 +104,15 @@
     },
     {
       "partName": "9-10002-R01_Alpha Production Build General Arrangement",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 9-10002-R01_Alpha Production Build General Arrangement",
+          "start": "2026-08-03",
+          "end": "2026-09-11",
+          "status": "scheduled",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "3-10016-R01_FD-M022 Thruster with Cobalt 14 Termination Kit Assembly",
@@ -112,11 +135,27 @@
     },
     {
       "partName": "8-10288-R01_GNSS Compass Assembly",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 8-10288-R01_GNSS Compass Assembly",
+          "start": "2025-06-06",
+          "end": "2025-06-06",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "8-10152-R04: Topside Box Assembly",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 8-10152-R04: Topside Box Assembly",
+          "start": "2025-06-13",
+          "end": "2025-06-13",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "8-10222-R02 Tether reel assembly with inline",
@@ -124,11 +163,27 @@
     },
     {
       "partName": "4-20012-R02: Waterlinked A125 DVL with inline to B5 & B2",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 4-20012-R02: Waterlinked A125 DVL with inline to B5 & B2",
+          "start": "2025-06-20",
+          "end": "2025-06-20",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "4-10017-R01: Oculus M750d Imaging Sonar with inline to B9",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 4-10017-R01: Oculus M750d Imaging Sonar with inline to B9",
+          "start": "2025-06-20",
+          "end": "2025-06-20",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "1-10262-R01 BlueRobotics Lumen Lights Short Skid Assembly",
@@ -136,11 +191,27 @@
     },
     {
       "partName": "CP Probe and DigiCP Assemblies",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) CP Probe and DigiCP Assemblies",
+          "start": "2025-06-13",
+          "end": "2025-06-13",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "Offshore Kit (Storage Case, and Kit Specific Subassemblies and Parts)",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) Offshore Kit (Storage Case, and Kit Specific Subassemblies and Parts)",
+          "start": "2025-06-13",
+          "end": "2025-06-13",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "3312 buoyancy Blocks (1-20121-R01, 1-20122-R01, 1-20216-R01)",
@@ -148,11 +219,27 @@
     },
     {
       "partName": "1-10001-R03_Main Frame Assembly",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 1-10001-R03_Main Frame Assembly",
+          "start": "2025-06-10",
+          "end": "2025-06-10",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "Marine Growth Measurement Probe- Short Skid",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) Marine Growth Measurement Probe- Short Skid",
+          "start": "2025-06-13",
+          "end": "2025-06-13",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "1-10142-R03_Short Skid HDPE Assembly",
@@ -164,7 +251,15 @@
     },
     {
       "partName": "7-20268-R03 & 7-20269-R03 Bluerobotics Lumen Lights Cable Assembly",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 7-20268-R03 & 7-20269-R03 Bluerobotics Lumen Lights Cable Assembly",
+          "start": "2025-06-06",
+          "end": "2025-06-06",
+          "status": "done",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "1-10184-R01 IMENCO Assembly",
@@ -194,6 +289,13 @@
       "partName": "[UPGRADE] 2-10043-R09 to R10_Battery Pod Assembly Upgrade Plan",
       "segments": [
         {
+          "label": "(Overall) [UPGRADE] 2-10043-R09 to R10_Battery Pod Assembly Upgrade Plan",
+          "start": "2026-07-20",
+          "end": "2026-07-22",
+          "status": "done",
+          "isMain": true
+        },
+        {
           "label": "1st Build: Training",
           "start": "2026-06-10",
           "end": "2026-06-12",
@@ -213,7 +315,15 @@
     },
     {
       "partName": "2-10043-R07 Battery Pod Assembly",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 2-10043-R07 Battery Pod Assembly",
+          "start": "2025-10-17",
+          "end": "2025-10-17",
+          "status": "scheduled",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "8-10290-R01 Battery Charger Set - Barebones",
@@ -225,7 +335,15 @@
     },
     {
       "partName": "9-10001-R03: Ikan Bilis Production Build General Arrangement",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) 9-10001-R03: Ikan Bilis Production Build General Arrangement",
+          "start": "2025-06-30",
+          "end": "2025-06-30",
+          "status": "scheduled",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "AIB2 INS DVL Sprintnav-U",
@@ -271,6 +389,13 @@
       "partName": "2-10168-R01_Antenna Hull",
       "segments": [
         {
+          "label": "(Overall) 2-10168-R01_Antenna Hull",
+          "start": "2026-07-27",
+          "end": "2026-08-14",
+          "status": "scheduled",
+          "isMain": true
+        },
+        {
           "label": "BOM",
           "start": "2026-07-24",
           "end": "2026-07-24",
@@ -287,6 +412,13 @@
     {
       "partName": "2-10164-R01_Main Hull Assembly",
       "segments": [
+        {
+          "label": "(Overall) 2-10164-R01_Main Hull Assembly",
+          "start": "2026-07-01",
+          "end": "2026-09-04",
+          "status": "in_progress",
+          "isMain": true
+        },
         {
           "label": "BOM",
           "start": "2026-07-31",
@@ -307,7 +439,15 @@
     },
     {
       "partName": "[UPGRADE] 7-20003-R02 to R03: B9 to Oculus Imaging Sonar",
-      "segments": []
+      "segments": [
+        {
+          "label": "(Overall) [UPGRADE] 7-20003-R02 to R03: B9 to Oculus Imaging Sonar",
+          "start": "2026-03-10",
+          "end": "2026-03-10",
+          "status": "scheduled",
+          "isMain": true
+        }
+      ]
     },
     {
       "partName": "[UPGRADE] 2-10014-R01 to R02: Navigation Housing Assembly",
