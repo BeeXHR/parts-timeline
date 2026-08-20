@@ -13,11 +13,13 @@
                       background: #fff; cursor: pointer; }
   .controls button:hover { background: #f5f5f5; }
   .controls .refresh { margin-left: auto; }
-  .chart-scroll { overflow-x: auto; border: 1px solid #eee; }
+  .chart-scroll { overflow-x: auto; overflow-y: hidden; border: 1px solid #eee; }
   .chart-inner { position: relative; }
-  .ruler { display: flex; position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; z-index: 3; }
+  .ruler { display: flex; position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; z-index: 3; height: 40px; }
   .ruler-label-spacer { width: 220px; flex-shrink: 0; position: sticky; left: 0; background: #fff; z-index: 4; }
-  .ruler-tick { position: absolute; top: 0; font-size: 12px; color: #888; padding: 6px 0 6px 6px; border-left: 1px solid #ddd; height: 100%; }
+  .ruler-tick { position: absolute; top: 12px; font-size: 12px; color: #888; padding-left: 6px; border-left: 1px solid #ddd; height: 28px; }
+  .today-chip { position: absolute; top: 2px; font-size: 11px; font-weight: 600; color: #fff; background: #e0392b;
+                padding: 1px 6px; border-radius: 4px; white-space: nowrap; transform: translateX(-50%); z-index: 5; }
   .row { display: flex; border-top: 1px solid #eee; min-height: 46px; }
   .label { width: 220px; flex-shrink: 0; padding: 10px 12px 10px 0; position: sticky; left: 0; background: #fff; z-index: 2; }
   .label .name { font-size: 13px; font-weight: 500; }
@@ -32,11 +34,7 @@
   .seg-bar.open { background: #f2f2f2; border-color: #ccc; color: #555; }
   .seg-bar.scheduled { background: #e8f0fe; border-color: #a9c6f5; color: #1a4d99; }
   .empty-note { font-size: 12px; color: #aaa; padding: 10px 0; }
-  .today-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #e0392b; z-index: 1; }
-  .today-dot { position: absolute; top: -8px; width: 14px; height: 14px; background: #e0392b; border-radius: 50%;
-               transform: translateX(-50%); left: 0; }
-  .today-label { position: absolute; top: -26px; font-size: 11px; font-weight: 600; color: #e0392b;
-                 white-space: nowrap; transform: translateX(-50%); left: 0; }
+  .today-line { position: absolute; top: 40px; bottom: 0; width: 1px; background: #e0392b; z-index: 1; }
 </style>
 </head>
 <body>
@@ -104,7 +102,7 @@ function render(data) {
   rulerSpacer.className = 'ruler-label-spacer';
   ruler.appendChild(rulerSpacer);
   const rulerTrack = document.createElement('div');
-  rulerTrack.style.cssText = `position:relative; width:${totalWidthPx}px; height:28px;`;
+  rulerTrack.style.cssText = `position:relative; width:${totalWidthPx}px; height:40px;`;
   const totalWeeks = Math.ceil(totalDays / 7);
   for (let i = 0; i < totalWeeks; i++) {
     const tick = document.createElement('div');
@@ -154,14 +152,14 @@ function render(data) {
       const start = new Date(s.start + 'T00:00:00').getTime();
       const end = new Date(s.end + 'T00:00:00').getTime();
       const leftPx = ((start - rangeStart) / msPerDay) * PX_PER_DAY;
-      // No artificial minimum — width is exactly the true date span, even if that's very narrow.
-      const widthPx = ((end - start) / msPerDay) * PX_PER_DAY;
+      // End date is inclusive — the task occupies the whole end day, so add +1 day to the span.
+      const widthPx = (((end - start) / msPerDay) + 1) * PX_PER_DAY;
       const dateStr = `${formatDateShort(s.start)} – ${formatDateShort(s.end)}`;
 
       const bar = document.createElement('div');
       bar.className = 'seg-bar ' + (s.status || 'open');
       bar.style.left = leftPx + 'px';
-      bar.style.width = Math.max(widthPx, 4) + 'px'; // 4px floor just so a same-day task isn't literally 0px/invisible
+      bar.style.width = Math.max(widthPx, 4) + 'px';
       bar.title = `${s.label} • ${dateStr}`;
 
       const text = document.createElement('span');
@@ -180,20 +178,18 @@ function render(data) {
   let todayLeftPx = null;
   if (todayMidnight >= rangeStart && todayMidnight <= rangeEnd) {
     todayLeftPx = 220 + ((todayMidnight - rangeStart) / msPerDay) * PX_PER_DAY;
+
     const line = document.createElement('div');
     line.className = 'today-line';
     line.style.left = todayLeftPx + 'px';
-
-    const dot = document.createElement('div');
-    dot.className = 'today-dot';
-    line.appendChild(dot);
-
-    const dateLabel = document.createElement('div');
-    dateLabel.className = 'today-label';
-    dateLabel.textContent = 'Today, ' + nowDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-    line.appendChild(dateLabel);
-
     chartInner.appendChild(line);
+
+    // Chip lives inside the sticky ruler track itself, so it can never get clipped
+    const chip = document.createElement('div');
+    chip.className = 'today-chip';
+    chip.style.left = (todayLeftPx - 220) + 'px';
+    chip.textContent = 'Today, ' + nowDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    rulerTrack.appendChild(chip);
   }
 
   const scrollContainer = document.querySelector('.chart-scroll');
