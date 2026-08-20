@@ -152,8 +152,7 @@ function render(data) {
       const start = new Date(s.start + 'T00:00:00').getTime();
       const end = new Date(s.end + 'T00:00:00').getTime();
       const leftPx = ((start - rangeStart) / msPerDay) * PX_PER_DAY;
-      // End date is inclusive — the task occupies the whole end day, so add +1 day to the span.
-      const widthPx = (((end - start) / msPerDay) + 1) * PX_PER_DAY;
+      const widthPx = ((end - start) / msPerDay) * PX_PER_DAY;
       const dateStr = `${formatDateShort(s.start)} – ${formatDateShort(s.end)}`;
 
       const bar = document.createElement('div');
@@ -184,7 +183,6 @@ function render(data) {
     line.style.left = todayLeftPx + 'px';
     chartInner.appendChild(line);
 
-    // Chip lives inside the sticky ruler track itself, so it can never get clipped
     const chip = document.createElement('div');
     chip.className = 'today-chip';
     chip.style.left = (todayLeftPx - 220) + 'px';
