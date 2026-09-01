@@ -1,30 +1,9 @@
 {
   "range": {
     "start": "2026-06-10",
-    "end": "2026-08-24"
+    "end": "2026-08-18"
   },
   "rows": [
-    {
-      "partName": "testing - ignore jann",
-      "mainRange": {
-        "start": "2026-08-19",
-        "end": "2026-08-22"
-      },
-      "segments": [
-        {
-          "label": "BOM",
-          "start": "2026-08-20",
-          "end": "2026-08-22",
-          "status": "scheduled"
-        },
-        {
-          "label": "Elec DWG",
-          "start": "2026-08-22",
-          "end": "2026-08-24",
-          "status": "scheduled"
-        }
-      ]
-    },
     {
       "partName": "AIB1.1 Main Hull R03",
       "mainRange": null,
