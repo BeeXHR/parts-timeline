@@ -1,9 +1,27 @@
 {
   "range": {
     "start": "2026-06-10",
-    "end": "2026-08-18"
+    "end": "2026-12-18"
   },
   "rows": [
+    {
+      "partName": "[UPGRADE] 2-10043-R11 Battery Housing Assembly",
+      "mainRange": null,
+      "segments": [
+        {
+          "label": "Full BOM Handover",
+          "start": "2026-12-07",
+          "end": "2026-12-08",
+          "status": "open"
+        },
+        {
+          "label": "FAI date",
+          "start": "2026-12-16",
+          "end": "2026-12-18",
+          "status": "open"
+        }
+      ]
+    },
     {
       "partName": "AIB1.1 Main Hull R03",
       "mainRange": null,
